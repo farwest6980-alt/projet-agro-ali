@@ -1,0 +1,19 @@
+<form class="filters" method="get">
+  <input type="search" name="q" placeholder="<%= placeholder %>" value="<%= filters.q %>">
+  <% if (typeof showType !== 'undefined' && showType) { %>
+  <select name="type">
+    <option value="">Offres &amp; demandes</option>
+    <option value="offre" <%= filters.type === 'offre' ? 'selected' : '' %>>Offres (vente)</option>
+    <option value="demande" <%= filters.type === 'demande' ? 'selected' : '' %>>Demandes (achat)</option>
+  </select>
+  <% } %>
+  <select name="categorie">
+    <option value="">Toutes catégories</option>
+    <% CATEGORIES.forEach(c => { %><option <%= filters.categorie === c ? 'selected' : '' %>><%= c %></option><% }) %>
+  </select>
+  <select name="region">
+    <option value="">Toutes régions</option>
+    <% REGIONS.forEach(r => { %><option <%= filters.region === r ? 'selected' : '' %>><%= r %></option><% }) %>
+  </select>
+  <button class="btn">Filtrer</button>
+</form>

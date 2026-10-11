@@ -1,0 +1,30 @@
+{
+  "name": "agrolink",
+  "version": "1.0.0",
+  "description": "Annuaire et place de marché B2B des fournisseurs agroalimentaires",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch server.js",
+    "seed": "node --disable-warning=ExperimentalWarning seed.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/farwest6980-alt/projet-agro-ali.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/farwest6980-alt/projet-agro-ali/issues"
+  },
+  "homepage": "https://github.com/farwest6980-alt/projet-agro-ali#readme",
+  "dependencies": {
+    "ejs": "^7.0.1",
+    "express": "^5.3.0",
+    "express-session": "^1.19.0"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}

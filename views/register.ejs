@@ -1,0 +1,33 @@
+<%- include('partials/header', { title: 'Inscription' }) %>
+<div class="form-page card">
+  <h1>Créer un compte</h1>
+  <% if (error) { %><div class="flash flash-error"><%= error %></div><% } %>
+  <form method="post" action="/inscription" class="form">
+    <div class="radio-cards">
+      <label><input type="radio" name="role" value="fournisseur" <%= values.role === 'fournisseur' ? 'checked' : '' %>><span><strong>Fournisseur</strong><br><small>Producteur, grossiste, transformateur</small></span></label>
+      <label><input type="radio" name="role" value="acheteur" <%= values.role === 'acheteur' ? 'checked' : '' %>><span><strong>Acheteur</strong><br><small>Restaurant, magasin, industriel, distributeur</small></span></label>
+    </div>
+    <div class="row">
+      <label>Nom et prénom *<input name="name" required maxlength="100" value="<%= values.name || '' %>"></label>
+      <label>Entreprise *<input name="company" required maxlength="120" value="<%= values.company || '' %>"></label>
+    </div>
+    <div class="row">
+      <label>E-mail professionnel *<input type="email" name="email" required value="<%= values.email || '' %>"></label>
+      <label>Mot de passe * <small class="muted">(8 caractères min.)</small><input type="password" name="password" required minlength="8"></label>
+    </div>
+    <div class="row">
+      <label>Activité principale<select name="category">
+        <option value="">—</option>
+        <% CATEGORIES.forEach(c => { %><option <%= values.category === c ? 'selected' : '' %>><%= c %></option><% }) %>
+      </select></label>
+      <label>Région<select name="region">
+        <option value="">—</option>
+        <% REGIONS.forEach(r => { %><option <%= values.region === r ? 'selected' : '' %>><%= r %></option><% }) %>
+      </select></label>
+    </div>
+    <label>Ville<input name="city" maxlength="100" value="<%= values.city || '' %>"></label>
+    <button class="btn">Créer mon compte</button>
+    <p class="muted small">Déjà inscrit ? <a href="/connexion">Se connecter</a></p>
+  </form>
+</div>
+<%- include('partials/footer') %>

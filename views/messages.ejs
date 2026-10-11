@@ -1,0 +1,42 @@
+<%- include('partials/header', { title: 'Messages' }) %>
+<div class="chat-layout<%= active ? ' has-active' : '' %>">
+  <aside class="card conv-list">
+    <h2>Conversations</h2>
+    <% conversations.forEach(c => { %>
+      <a class="conv-item<%= active && active.id === c.id ? ' active' : '' %>" href="/messages/<%= c.id %>" data-conv-id="<%= c.id %>">
+        <div class="avatar"><%= c.other_company.slice(0, 1).toUpperCase() %></div>
+        <div class="conv-text">
+          <div class="conv-title"><strong><%= c.other_company %></strong><span class="badge conv-badge"<% if (!c.unread) { %> hidden<% } %>><%= c.unread %></span></div>
+          <% if (c.listing_title) { %><div class="small muted">📌 <%= c.listing_title %></div><% } %>
+          <div class="small muted ellipsis conv-last"><%= c.last_body || 'Nouvelle conversation' %></div>
+        </div>
+      </a>
+    <% }) %>
+    <% if (!conversations.length) { %><p class="muted small">Aucune conversation. Contactez un fournisseur depuis l'annuaire ou une annonce.</p><% } %>
+  </aside>
+  <section class="card chat">
+    <% if (active) { %>
+      <header class="chat-head">
+        <a href="/messages" class="back-link">←</a>
+        <div class="avatar"><%= other.company.slice(0, 1).toUpperCase() %></div>
+        <div>
+          <a href="/fournisseurs/<%= other.id %>"><strong><%= other.company %></strong></a>
+          <div class="small muted"><%= other.name %> · <%= other.role === 'fournisseur' ? 'Fournisseur' : 'Acheteur' %><% if (active.listing) { %> · 📌 <a href="/annonces/<%= active.listing.id %>"><%= active.listing.title %></a><% } %></div>
+        </div>
+      </header>
+      <div class="chat-messages" id="chat-messages" data-conv-id="<%= active.id %>">
+        <% messages.forEach(m => { %>
+          <div class="bubble <%= m.sender_id === user.id ? 'mine' : 'theirs' %>" data-id="<%= m.id %>"><div class="prewrap"><%= m.body %></div><time><%= formatDate(m.created_at) %></time></div>
+        <% }) %>
+        <% if (!messages.length) { %><p class="muted small center" id="chat-empty">Démarrez la conversation 👋</p><% } %>
+      </div>
+      <form class="chat-form" id="chat-form">
+        <textarea name="body" rows="1" placeholder="Votre message… (Entrée pour envoyer)" required maxlength="4000"></textarea>
+        <button class="btn">Envoyer</button>
+      </form>
+    <% } else { %>
+      <div class="empty chat-placeholder">Sélectionnez une conversation</div>
+    <% } %>
+  </section>
+</div>
+<%- include('partials/footer') %>

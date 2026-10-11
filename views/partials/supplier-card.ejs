@@ -1,0 +1,12 @@
+<a class="card supplier-card" href="/fournisseurs/<%= s.id %>">
+  <div class="supplier-head">
+    <div class="avatar avatar-lg"><%= s.company.slice(0, 1).toUpperCase() %></div>
+    <div>
+      <h3><%= s.company %></h3>
+      <div class="muted small"><%= [s.city, s.region].filter(Boolean).join(', ') || 'Localisation non renseignée' %></div>
+    </div>
+  </div>
+  <% if (s.category) { %><span class="tag"><%= s.category %></span><% } %>
+  <p class="muted clamp"><%= s.description || 'Pas encore de description.' %></p>
+  <% if (s.certifications) { %><div class="small">✅ <%= s.certifications %></div><% } %>
+</a>

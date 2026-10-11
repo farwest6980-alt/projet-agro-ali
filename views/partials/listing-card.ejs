@@ -1,0 +1,14 @@
+<a class="card listing-card" href="/annonces/<%= l.id %>">
+  <div class="card-top">
+    <span class="tag tag-<%= l.type %>"><%= l.type === 'offre' ? 'Offre' : 'Demande' %></span>
+    <span class="muted small"><%= l.category %></span>
+  </div>
+  <h3><%= l.title %></h3>
+  <p class="muted clamp"><%= l.description %></p>
+  <div class="card-meta">
+    <% if (l.quantity) { %><span>📦 <%= l.quantity %></span><% } %>
+    <% if (l.price) { %><span>💶 <%= l.price %></span><% } %>
+    <% if (l.region) { %><span>📍 <%= l.region %></span><% } %>
+  </div>
+  <% if (l.company) { %><div class="small muted">par <strong><%= l.company %></strong></div><% } %>
+</a>

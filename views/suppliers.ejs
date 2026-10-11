@@ -1,0 +1,9 @@
+<%- include('partials/header', { title: 'Annuaire des fournisseurs' }) %>
+<h1>Annuaire des fournisseurs</h1>
+<%- include('partials/filters', { placeholder: 'Nom, produit, ville, label…' }) %>
+<p class="muted"><%= suppliers.length %> fournisseur<%= suppliers.length > 1 ? 's' : '' %></p>
+<div class="grid">
+  <% suppliers.forEach(s => { %><%- include('partials/supplier-card', { s }) %><% }) %>
+</div>
+<% if (!suppliers.length) { %><div class="empty">Aucun fournisseur ne correspond à votre recherche.</div><% } %>
+<%- include('partials/footer') %>

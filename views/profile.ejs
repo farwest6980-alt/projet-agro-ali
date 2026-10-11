@@ -1,0 +1,53 @@
+<%- include('partials/header', { title: 'Mon profil' }) %>
+<div class="section-head">
+  <h1>Mon profil</h1>
+  <div class="actions">
+    <a class="btn btn-outline" href="/fournisseurs/<%= user.id %>">Voir ma fiche publique</a>
+    <form method="post" action="/deconnexion"><button class="btn btn-outline">Déconnexion</button></form>
+  </div>
+</div>
+<div class="profile-layout reverse">
+  <section class="card">
+    <h2>Informations <span class="tag tag-<%= user.role === 'fournisseur' ? 'offre' : 'demande' %>"><%= user.role === 'fournisseur' ? 'Fournisseur' : 'Acheteur' %></span></h2>
+    <form method="post" action="/profil" class="form">
+      <div class="row">
+        <label>Nom et prénom<input name="name" maxlength="100" value="<%= user.name %>"></label>
+        <label>Entreprise<input name="company" maxlength="120" value="<%= user.company %>"></label>
+      </div>
+      <label>Présentation de l'entreprise<textarea name="description" rows="6" maxlength="3000" placeholder="Votre activité, vos produits, vos capacités de production, vos zones de livraison…"><%= user.description %></textarea></label>
+      <div class="row">
+        <label>Activité principale<select name="category">
+          <option value="">—</option>
+          <% CATEGORIES.forEach(c => { %><option <%= user.category === c ? 'selected' : '' %>><%= c %></option><% }) %>
+        </select></label>
+        <label>Région<select name="region">
+          <option value="">—</option>
+          <% REGIONS.forEach(r => { %><option <%= user.region === r ? 'selected' : '' %>><%= r %></option><% }) %>
+        </select></label>
+      </div>
+      <div class="row">
+        <label>Ville<input name="city" maxlength="100" value="<%= user.city %>"></label>
+        <label>Labels / certifications<input name="certifications" maxlength="300" value="<%= user.certifications %>" placeholder="Bio, IFS, BRC, AOP, Label Rouge…"></label>
+      </div>
+      <div class="row">
+        <label>Téléphone <small class="muted">(visible des membres connectés)</small><input name="phone" maxlength="40" value="<%= user.phone %>"></label>
+        <label>Site web<input name="website" maxlength="200" value="<%= user.website %>" placeholder="https://…"></label>
+      </div>
+      <button class="btn">Enregistrer</button>
+    </form>
+  </section>
+  <section>
+    <div class="section-head"><h2 class="section-title">Mes annonces</h2><a class="btn btn-small" href="/annonces/nouvelle">+ Nouvelle</a></div>
+    <% listings.forEach(l => { %>
+      <div class="card mini-listing<%= l.active ? '' : ' inactive' %>">
+        <span class="tag tag-<%= l.type %>"><%= l.type === 'offre' ? 'Offre' : 'Demande' %></span>
+        <a href="/annonces/<%= l.id %>"><strong><%= l.title %></strong></a>
+        <% if (l.active) { %>
+          <form method="post" action="/annonces/<%= l.id %>/cloturer" onsubmit="return confirm('Clôturer cette annonce ?')"><button class="link-btn">Clôturer</button></form>
+        <% } else { %><span class="muted small">Clôturée</span><% } %>
+      </div>
+    <% }) %>
+    <% if (!listings.length) { %><div class="empty">Vous n'avez pas encore publié d'annonce.</div><% } %>
+  </section>
+</div>
+<%- include('partials/footer') %>

@@ -1,0 +1,29 @@
+<%- include('partials/header', { title: 'Nouvelle annonce' }) %>
+<div class="form-page card">
+  <h1>Publier une annonce</h1>
+  <% if (error) { %><div class="flash flash-error"><%= error %></div><% } %>
+  <form method="post" action="/annonces" class="form">
+    <div class="radio-cards">
+      <label><input type="radio" name="type" value="offre" <%= values.type === 'offre' ? 'checked' : '' %>><span><strong>Offre</strong><br><small>Je vends / propose un produit</small></span></label>
+      <label><input type="radio" name="type" value="demande" <%= values.type === 'demande' ? 'checked' : '' %>><span><strong>Demande</strong><br><small>Je cherche un produit / fournisseur</small></span></label>
+    </div>
+    <label>Titre *<input name="title" maxlength="120" required value="<%= values.title || '' %>" placeholder="Ex : Pommes Golden calibre 70/75 — 20 tonnes"></label>
+    <div class="row">
+      <label>Catégorie *<select name="category" required>
+        <option value="">Choisir…</option>
+        <% CATEGORIES.forEach(c => { %><option <%= values.category === c ? 'selected' : '' %>><%= c %></option><% }) %>
+      </select></label>
+      <label>Région<select name="region">
+        <option value="">—</option>
+        <% REGIONS.forEach(r => { %><option <%= values.region === r ? 'selected' : '' %>><%= r %></option><% }) %>
+      </select></label>
+    </div>
+    <div class="row">
+      <label>Quantité / volume<input name="quantity" maxlength="100" value="<%= values.quantity || '' %>" placeholder="Ex : 5 palettes / mois"></label>
+      <label>Prix indicatif<input name="price" maxlength="100" value="<%= values.price || '' %>" placeholder="Ex : 1,20 €/kg HT, à négocier"></label>
+    </div>
+    <label>Description *<textarea name="description" rows="7" maxlength="3000" required placeholder="Origine, conditionnement, labels, délais, conditions de livraison…"><%= values.description || '' %></textarea></label>
+    <button class="btn">Publier</button>
+  </form>
+</div>
+<%- include('partials/footer') %>

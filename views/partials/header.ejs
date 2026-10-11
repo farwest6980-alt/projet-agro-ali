@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= typeof title !== 'undefined' ? title + ' · ' : '' %>AgroLink — Fournisseurs agroalimentaires</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body<% if (user) { %> data-user-id="<%= user.id %>"<% } %>>
+<header class="topbar">
+  <div class="container nav">
+    <a href="/" class="brand"><span class="logo">🌾</span> AgroLink</a>
+    <nav class="links">
+      <a href="/fournisseurs">Fournisseurs</a>
+      <a href="/annonces">Annonces</a>
+      <% if (user) { %>
+        <a href="/messages" class="msg-link">Messages<span class="badge" id="unread-badge"<% if (!unread) { %> hidden<% } %>><%= unread %></span></a>
+        <a href="/annonces/nouvelle" class="btn btn-small">+ Annonce</a>
+        <a href="/profil" class="avatar" title="Mon profil"><%= user.company.slice(0, 1).toUpperCase() %></a>
+      <% } else { %>
+        <a href="/connexion">Connexion</a>
+        <a href="/inscription" class="btn btn-small">Inscription</a>
+      <% } %>
+    </nav>
+  </div>
+</header>
+<main class="container">
+<% if (flash) { %><div class="flash flash-<%= flash.type %>"><%= flash.text %></div><% } %>
