@@ -4,10 +4,10 @@
     <h2>Conversations</h2>
     <% conversations.forEach(c => { %>
       <a class="conv-item<%= active && active.id === c.id ? ' active' : '' %>" href="/messages/<%= c.id %>" data-conv-id="<%= c.id %>">
-        <div class="avatar"><%= c.other_company.slice(0, 1).toUpperCase() %></div>
+        <%- avatar({ company: c.other_company, logo: c.other_logo }) %>
         <div class="conv-text">
-          <div class="conv-title"><strong><%= c.other_company %></strong><span class="badge conv-badge"<% if (!c.unread) { %> hidden<% } %>><%= c.unread %></span></div>
-          <% if (c.listing_title) { %><div class="small muted">📌 <%= c.listing_title %></div><% } %>
+          <div class="conv-title"><strong class="ellipsis"><%= c.other_company %> <%- verifiedBadge({ verification_status: c.other_status }, false) %></strong><span class="badge conv-badge"<% if (!c.unread) { %> hidden<% } %>><%= c.unread %></span></div>
+          <% if (c.listing_title) { %><div class="small muted ellipsis"><%= c.listing_title %></div><% } %>
           <div class="small muted ellipsis conv-last"><%= c.last_body || 'Nouvelle conversation' %></div>
         </div>
       </a>
@@ -17,23 +17,54 @@
   <section class="card chat">
     <% if (active) { %>
       <header class="chat-head">
-        <a href="/messages" class="back-link">←</a>
-        <div class="avatar"><%= other.company.slice(0, 1).toUpperCase() %></div>
-        <div>
-          <a href="/fournisseurs/<%= other.id %>"><strong><%= other.company %></strong></a>
-          <div class="small muted"><%= other.name %> · <%= other.role === 'fournisseur' ? 'Fournisseur' : 'Acheteur' %><% if (active.listing) { %> · 📌 <a href="/annonces/<%= active.listing.id %>"><%= active.listing.title %></a><% } %></div>
+        <a href="/messages" class="back-link" aria-label="Retour"><%- icon('back') %></a>
+        <%- avatar(other) %>
+        <div class="chat-head-text">
+          <a href="/fournisseurs/<%= other.id %>"><strong><%= other.company %></strong></a> <%- verifiedBadge(other) %>
+          <div class="small muted"><%= other.name %> · <%= other.role === 'fournisseur' ? 'Fournisseur' : 'Acheteur' %><% if (active.listing) { %> · <a href="/annonces/<%= active.listing.id %>"><%= active.listing.title %></a><% } %></div>
         </div>
+        <button type="button" class="btn btn-small btn-ghost" data-open-dialog="report-dialog"><%- icon('flag') %>Signaler</button>
       </header>
+      <div class="safety-banner"><%- icon('shield') %>Ne payez jamais en dehors de la plateforme.</div>
       <div class="chat-messages" id="chat-messages" data-conv-id="<%= active.id %>">
-        <% messages.forEach(m => { %>
-          <div class="bubble <%= m.sender_id === user.id ? 'mine' : 'theirs' %>" data-id="<%= m.id %>"><div class="prewrap"><%= m.body %></div><time><%= formatDate(m.created_at) %></time></div>
-        <% }) %>
-        <% if (!messages.length) { %><p class="muted small center" id="chat-empty">Démarrez la conversation 👋</p><% } %>
+        <% messages.forEach(m => { %><%- include('partials/message', { m, viewer: user }) %><% }) %>
+        <% if (!messages.length) { %><p class="muted small center" id="chat-empty">Démarrez la conversation.</p><% } %>
       </div>
+      <div class="chat-warning" id="chat-warning" hidden><%- icon('alert') %><span></span></div>
+      <% if (user.role === 'fournisseur') { %>
+        <form class="quote-form quote-panel" id="quote-form" hidden>
+          <div class="quote-panel-head"><strong class="with-icon"><%- icon('file') %>Nouveau devis</strong><button type="button" class="link-btn" data-toggle-quote>Fermer</button></div>
+          <input name="product" required maxlength="150" placeholder="Produit" value="<%= active.listing ? active.listing.title : '' %>">
+          <div class="row">
+            <input name="quantity" required maxlength="100" placeholder="Quantité (ex : 18 t)">
+            <input name="price" required maxlength="100" placeholder="Prix (ex : 3,10 €/kg)">
+          </div>
+          <div class="row">
+            <label class="small">Incoterm<select name="incoterm"><% INCOTERMS.forEach(i => { %><option <%= i === 'FOB' ? 'selected' : '' %>><%= i %></option><% }) %></select></label>
+            <label class="small">Valable jusqu'au<input type="date" name="valid_until" value="<%= defaultValidity %>" required></label>
+          </div>
+          <button class="btn">Envoyer le devis</button>
+        </form>
+      <% } %>
       <form class="chat-form" id="chat-form">
-        <textarea name="body" rows="1" placeholder="Votre message… (Entrée pour envoyer)" required maxlength="4000"></textarea>
+        <% if (user.role === 'fournisseur') { %><button type="button" class="btn btn-outline btn-icon" data-toggle-quote title="Envoyer un devis"><%- icon('file') %><span class="hide-mobile">Devis</span></button><% } %>
+        <textarea name="body" rows="1" placeholder="Votre message…" title="Entrée pour envoyer, Maj+Entrée pour aller à la ligne" required maxlength="4000"></textarea>
         <button class="btn">Envoyer</button>
       </form>
+      <dialog id="report-dialog" class="dialog">
+        <form method="post" action="/messages/<%= active.id %>/signaler" class="form">
+          <h2 class="with-icon"><%- icon('flag') %>Signaler <%= other.company %></h2>
+          <label>Motif<select name="reason">
+            <option>Arnaque ou fraude</option>
+            <option>Demande de paiement hors plateforme</option>
+            <option>Produit non conforme</option>
+            <option>Comportement inapproprié</option>
+            <option>Autre</option>
+          </select></label>
+          <label>Détails <small class="muted">(facultatif)</small><textarea name="details" rows="3" maxlength="1000"></textarea></label>
+          <div class="actions"><button class="btn">Envoyer le signalement</button><button type="button" class="btn btn-outline" data-close-dialog>Annuler</button></div>
+        </form>
+      </dialog>
     <% } else { %>
       <div class="empty chat-placeholder">Sélectionnez une conversation</div>
     <% } %>

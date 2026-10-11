@@ -1,0 +1,34 @@
+<%- include('partials/header', { title: 'Vérification' }) %>
+<div class="form-page card">
+  <p><a href="/profil" class="with-icon"><%- icon('back') %>Mon profil</a></p>
+  <h1>Vérification de l'entreprise</h1>
+  <div class="verif-box verif-<%= user.verification_status %>">
+    <%- user.verification_status === 'verifie' ? icon('verified') : icon('shield') %>
+    <div><strong>Statut : <%= VERIF_STATUS[user.verification_status] %></strong></div>
+  </div>
+  <% if (error) { %><div class="flash flash-error"><%= error %></div><% } %>
+
+  <% if (user.role !== 'fournisseur') { %>
+    <p class="muted">La vérification est réservée aux comptes fournisseurs.</p>
+  <% } else if (['en_attente', 'verifie'].includes(user.verification_status)) { %>
+    <p class="muted"><%= user.verification_status === 'verifie' ? 'Votre entreprise est vérifiée. Le badge est affiché sur votre fiche, vos annonces et dans la messagerie.' : 'Merci ! Notre équipe examine vos documents, généralement sous 48 h ouvrées.' %></p>
+  <% } else { %>
+    <p class="muted">Envoyez les documents officiels de votre entreprise. Ils restent confidentiels : seule l'équipe AgroLink peut les consulter.</p>
+    <form method="post" action="/profil/verification" class="form" enctype="multipart/form-data">
+      <% Object.entries(VERIFICATION_DOCS).forEach(([key, label]) => { %>
+        <label><%= label %><%= key === 'registre_commerce' ? ' *' : '' %> <small class="muted">(PDF ou JPG, 10 Mo max)</small>
+          <input type="file" name="<%= key %>" accept="application/pdf,image/jpeg" <%= key === 'registre_commerce' ? 'required' : '' %>>
+        </label>
+      <% }) %>
+      <button class="btn"><%- icon('upload') %>Envoyer ma demande</button>
+    </form>
+  <% } %>
+
+  <% if (documents.length) { %>
+    <h2 class="section-title">Documents envoyés</h2>
+    <ul class="doc-list">
+      <% documents.forEach(d => { %><li><%- icon('file') %><a href="/documents/<%= d.id %>" target="_blank"><%= VERIFICATION_DOCS[d.doc_type] %></a> <span class="muted small">— <%= formatDate(d.created_at) %></span></li><% }) %>
+    </ul>
+  <% } %>
+</div>
+<%- include('partials/footer') %>

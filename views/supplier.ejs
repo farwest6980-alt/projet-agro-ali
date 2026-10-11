@@ -1,29 +1,31 @@
-<%- include('partials/header', { title: supplier.company }) %>
+<%- include('partials/header', { title: member.company }) %>
 <div class="profile-layout">
   <aside class="card profile-card">
-    <div class="avatar avatar-xl"><%= supplier.company.slice(0, 1).toUpperCase() %></div>
-    <h1><%= supplier.company %></h1>
-    <div class="tag tag-<%= supplier.role === 'fournisseur' ? 'offre' : 'demande' %>"><%= supplier.role === 'fournisseur' ? 'Fournisseur' : 'Acheteur' %></div>
+    <%- avatar(member, 'xl') %>
+    <h1><%= member.company %></h1>
+    <div class="badges">
+      <span class="tag tag-<%= member.role === 'fournisseur' ? 'offre' : 'demande' %>"><%= member.role === 'fournisseur' ? 'Fournisseur' : 'Acheteur' %></span>
+      <%- verifiedBadge(member) %>
+    </div>
     <ul class="info-list">
-      <% if (supplier.category) { %><li>🏷️ <%= supplier.category %></li><% } %>
-      <% if (supplier.city || supplier.region) { %><li>📍 <%= [supplier.city, supplier.region].filter(Boolean).join(', ') %></li><% } %>
-      <% if (supplier.certifications) { %><li>✅ <%= supplier.certifications %></li><% } %>
-      <% if (user && supplier.phone) { %><li>📞 <%= supplier.phone %></li><% } %>
-      <% if (supplier.website) { %><li>🌐 <a href="<%= supplier.website %>" target="_blank" rel="noopener nofollow"><%= supplier.website.replace(/^https?:\/\//, '') %></a></li><% } %>
-      <li class="muted small">Membre depuis <%= new Date(supplier.created_at.replace(' ', 'T') + 'Z').toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }) %></li>
+      <% if (member.category) { %><li><%- icon('tag') %><%= member.category %></li><% } %>
+      <% if (member.city || member.country) { %><li><%- icon('pin') %><%= [member.city, member.country].filter(Boolean).join(', ') %></li><% } %>
+      <% if (member.certifications) { %><li><%- icon('award') %><%= member.certifications %></li><% } %>
+      <li class="muted small"><%- icon('calendar') %>Membre depuis <%= new Date(member.created_at.replace(' ', 'T') + 'Z').toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }) %></li>
     </ul>
     <% if (!user) { %>
-      <a class="btn btn-block" href="/connexion?next=/fournisseurs/<%= supplier.id %>">Se connecter pour contacter</a>
-    <% } else if (user.id !== supplier.id) { %>
-      <form method="post" action="/messages/nouveau"><input type="hidden" name="to" value="<%= supplier.id %>"><button class="btn btn-block">💬 Envoyer un message</button></form>
+      <a class="btn btn-block" href="/connexion?next=/fournisseurs/<%= member.id %>">Se connecter pour contacter</a>
+    <% } else if (user.id !== member.id) { %>
+      <form method="post" action="/messages/nouveau"><input type="hidden" name="to" value="<%= member.id %>"><button class="btn btn-block"><%- icon('chat') %>Envoyer un message</button></form>
     <% } else { %>
       <a class="btn btn-outline btn-block" href="/profil">Modifier mon profil</a>
     <% } %>
+    <p class="small muted secure-note"><%- icon('lock') %>Les échanges et devis passent par la messagerie AgroLink.</p>
   </aside>
   <section>
     <div class="card">
       <h2>Présentation</h2>
-      <p class="prewrap"><%= supplier.description || 'Ce membre n\'a pas encore rédigé de présentation.' %></p>
+      <p class="prewrap"><%= member.description || "Ce membre n'a pas encore rédigé de présentation." %></p>
     </div>
     <h2 class="section-title">Annonces (<%= listings.length %>)</h2>
     <div class="grid grid-2">

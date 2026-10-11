@@ -1,0 +1,113 @@
+<%- include('partials/header', { title: 'Administration' }) %>
+<h1>Administration</h1>
+<nav class="admin-tabs">
+  <a href="#verifications">Vérifications <span class="badge"<% if (!pendingSuppliers.length) { %> hidden<% } %>><%= pendingSuppliers.length %></span></a>
+  <a href="#annonces">Annonces à modérer <span class="badge"<% if (!pendingListings.length) { %> hidden<% } %>><%= pendingListings.length %></span></a>
+  <a href="#signalements">Signalements <span class="badge"<% if (!reports.length) { %> hidden<% } %>><%= reports.length %></span></a>
+  <a href="#membres">Membres</a>
+</nav>
+
+<% const statusForm = (id, status, label, cls = 'btn-outline', back = '') => `<form method="post" action="/admin/membres/${id}/statut"><input type="hidden" name="status" value="${status}">${back ? `<input type="hidden" name="back" value="${back}">` : ''}<button class="btn btn-small ${cls}">${label}</button></form>`; %>
+
+<section id="verifications">
+  <h2 class="section-title">Fournisseurs à vérifier</h2>
+  <% pendingSuppliers.forEach(s => { %>
+    <div class="card admin-item">
+      <div class="admin-main">
+        <%- avatar(s, 'lg') %>
+        <div>
+          <a href="/fournisseurs/<%= s.id %>"><strong><%= s.company %></strong></a>
+          <div class="small muted"><%= s.name %> · <%= s.email %> · <%= [s.city, s.country].filter(Boolean).join(', ') %></div>
+          <div class="small muted">
+            <% if (s.phone) { %><span class="with-icon"><%- icon('phone') %><%= s.phone %></span><% } %>
+            <% if (s.website) { %><span class="with-icon"><%- icon('globe') %><a href="<%= s.website %>" target="_blank" rel="noopener nofollow"><%= s.website %></a></span><% } %>
+          </div>
+          <ul class="doc-list">
+            <% s.documents.forEach(d => { %><li><%- icon('file') %><a href="/documents/<%= d.id %>" target="_blank"><%= VERIFICATION_DOCS[d.doc_type] %></a> <span class="muted small"><%= d.mime === 'application/pdf' ? 'PDF' : 'JPG' %> · <%= formatDate(d.created_at) %></span></li><% }) %>
+          </ul>
+        </div>
+      </div>
+      <div class="actions">
+        <%- statusForm(s.id, 'verifie', 'Valider', '') %>
+        <%- statusForm(s.id, 'refuse', 'Refuser') %>
+        <%- statusForm(s.id, 'suspendu', 'Suspendre', 'btn-danger') %>
+      </div>
+    </div>
+  <% }) %>
+  <% if (!pendingSuppliers.length) { %><div class="empty">Aucune demande en attente.</div><% } %>
+</section>
+
+<section id="annonces">
+  <h2 class="section-title">Annonces à modérer</h2>
+  <% pendingListings.forEach(l => { %>
+    <div class="card admin-item">
+      <div class="admin-main">
+        <div class="admin-photos">
+          <% l.photos.forEach(p => { %><a href="/media/listings/<%= p.filename %>.webp" target="_blank"><img src="/media/listings/<%= p.filename %>_thumb.webp" alt=""></a><% }) %>
+          <% if (!l.photos.length) { %><div class="photo-placeholder"><%- icon('image') %></div><% } %>
+        </div>
+        <div>
+          <span class="tag tag-<%= l.type %>"><%= l.type === 'offre' ? 'Offre' : 'Demande' %></span>
+          <a href="/annonces/<%= l.id %>"><strong><%= l.title %></strong></a>
+          <div class="small muted"><%= l.company %> <%- verifiedBadge(l, false) %> · <%= l.category %> · <%= [l.quantity, l.price, l.incoterm, l.country].filter(Boolean).join(' · ') %></div>
+          <p class="small clamp"><%= l.description %></p>
+        </div>
+      </div>
+      <div class="actions">
+        <form method="post" action="/admin/annonces/<%= l.id %>/statut"><input type="hidden" name="status" value="publiee"><button class="btn btn-small">Valider</button></form>
+        <form method="post" action="/admin/annonces/<%= l.id %>/statut"><input type="hidden" name="status" value="refusee"><button class="btn btn-small btn-outline">Refuser</button></form>
+        <%- statusForm(l.user_id, 'suspendu', 'Suspendre l\'auteur', 'btn-danger') %>
+      </div>
+    </div>
+  <% }) %>
+  <% if (!pendingListings.length) { %><div class="empty">Aucune annonce en attente.</div><% } %>
+</section>
+
+<section id="signalements">
+  <h2 class="section-title">Signalements</h2>
+  <% reports.forEach(r => { %>
+    <div class="card admin-item">
+      <div>
+        <div class="with-icon"><%- icon(r.auto ? 'lock' : 'flag') %><strong><%= r.reason %></strong> <span class="pill <%= r.auto ? 'pill-en_moderation' : 'pill-refuse' %>"><%= r.auto ? 'Automatique' : 'Membre' %></span></div>
+        <div class="small muted">
+          Visé : <a href="/fournisseurs/<%= r.reported_id %>"><%= r.reported_company || '—' %></a> (<%= VERIF_STATUS[r.reported_status] || '—' %>)
+          <% if (!r.auto) { %> · par <%= r.reporter_company || 'membre supprimé' %><% } %> · <%= formatDate(r.created_at) %>
+          <% if (r.conversation_id) { %> · <a href="/admin/conversations/<%= r.conversation_id %>">Voir la conversation</a><% } %>
+        </div>
+        <% if (r.details) { %><p class="small prewrap report-details"><%= r.details %></p><% } %>
+      </div>
+      <div class="actions">
+        <form method="post" action="/admin/signalements/<%= r.id %>/traiter"><button class="btn btn-small">Marquer traité</button></form>
+        <% if (r.reported_id && r.reported_status !== 'suspendu') { %><%- statusForm(r.reported_id, 'suspendu', 'Suspendre', 'btn-danger') %><% } %>
+      </div>
+    </div>
+  <% }) %>
+  <% if (!reports.length) { %><div class="empty">Aucun signalement ouvert.</div><% } %>
+</section>
+
+<section id="membres">
+  <h2 class="section-title">Membres</h2>
+  <div class="card table-wrap">
+    <table class="table">
+      <thead><tr><th>Entreprise</th><th>Rôle</th><th>Pays</th><th>Statut</th><th></th></tr></thead>
+      <tbody>
+        <% members.forEach(m => { %>
+          <tr>
+            <td><a href="/fournisseurs/<%= m.id %>"><%= m.company %></a><div class="small muted"><%= m.email %></div></td>
+            <td><%= m.role === 'fournisseur' ? 'Fournisseur' : 'Acheteur' %></td>
+            <td><%= m.country %></td>
+            <td><span class="pill pill-<%= m.verification_status %>"><%= VERIF_STATUS[m.verification_status] %></span></td>
+            <td><div class="actions actions-end">
+              <% if (m.verification_status === 'suspendu') { %><%- statusForm(m.id, 'non_verifie', 'Réactiver', 'btn-outline', 'membres') %>
+              <% } else { %>
+                <% if (m.verification_status !== 'verifie') { %><%- statusForm(m.id, 'verifie', 'Valider', 'btn-outline', 'membres') %><% } %>
+                <%- statusForm(m.id, 'suspendu', 'Suspendre', 'btn-danger', 'membres') %>
+              <% } %>
+            </div></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<%- include('partials/footer') %>

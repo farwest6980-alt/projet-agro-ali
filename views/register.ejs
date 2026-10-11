@@ -4,8 +4,8 @@
   <% if (error) { %><div class="flash flash-error"><%= error %></div><% } %>
   <form method="post" action="/inscription" class="form">
     <div class="radio-cards">
-      <label><input type="radio" name="role" value="fournisseur" <%= values.role === 'fournisseur' ? 'checked' : '' %>><span><strong>Fournisseur</strong><br><small>Producteur, grossiste, transformateur</small></span></label>
-      <label><input type="radio" name="role" value="acheteur" <%= values.role === 'acheteur' ? 'checked' : '' %>><span><strong>Acheteur</strong><br><small>Restaurant, magasin, industriel, distributeur</small></span></label>
+      <label><input type="radio" name="role" value="fournisseur" <%= values.role === 'fournisseur' ? 'checked' : '' %>><span><strong>Fournisseur</strong><br><small>Producteur, conditionneur, exportateur</small></span></label>
+      <label><input type="radio" name="role" value="acheteur" <%= values.role === 'acheteur' ? 'checked' : '' %>><span><strong>Acheteur</strong><br><small>Importateur, grossiste, épicerie, industriel</small></span></label>
     </div>
     <div class="row">
       <label>Nom et prénom *<input name="name" required maxlength="100" value="<%= values.name || '' %>"></label>
@@ -20,9 +20,9 @@
         <option value="">—</option>
         <% CATEGORIES.forEach(c => { %><option <%= values.category === c ? 'selected' : '' %>><%= c %></option><% }) %>
       </select></label>
-      <label>Région<select name="region">
+      <label>Pays<select name="country">
         <option value="">—</option>
-        <% REGIONS.forEach(r => { %><option <%= values.region === r ? 'selected' : '' %>><%= r %></option><% }) %>
+        <% COUNTRIES.forEach(c => { %><option <%= values.country === c ? 'selected' : '' %>><%= c %></option><% }) %>
       </select></label>
     </div>
     <label>Ville<input name="city" maxlength="100" value="<%= values.city || '' %>"></label>

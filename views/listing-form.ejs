@@ -1,29 +1,49 @@
 <%- include('partials/header', { title: 'Nouvelle annonce' }) %>
 <div class="form-page card">
   <h1>Publier une annonce</h1>
-  <% if (error) { %><div class="flash flash-error"><%= error %></div><% } %>
-  <form method="post" action="/annonces" class="form">
+  <p class="muted small">Votre annonce sera vérifiée par notre équipe avant d'être publiée.</p>
+  <% if (error) { %><div class="flash flash-error"><%= error %><% if (typeof photosLost !== 'undefined' && photosLost) { %> Merci de sélectionner à nouveau vos photos.<% } %></div><% } %>
+  <form method="post" action="/annonces" class="form" enctype="multipart/form-data">
     <div class="radio-cards">
-      <label><input type="radio" name="type" value="offre" <%= values.type === 'offre' ? 'checked' : '' %>><span><strong>Offre</strong><br><small>Je vends / propose un produit</small></span></label>
-      <label><input type="radio" name="type" value="demande" <%= values.type === 'demande' ? 'checked' : '' %>><span><strong>Demande</strong><br><small>Je cherche un produit / fournisseur</small></span></label>
+      <label><input type="radio" name="type" value="offre" <%= values.type === 'offre' ? 'checked' : '' %>><span><strong>Offre</strong><br><small>Je vends / j'exporte un produit</small></span></label>
+      <label><input type="radio" name="type" value="demande" <%= values.type === 'demande' ? 'checked' : '' %>><span><strong>Demande</strong><br><small>Je cherche un produit / un fournisseur</small></span></label>
     </div>
-    <label>Titre *<input name="title" maxlength="120" required value="<%= values.title || '' %>" placeholder="Ex : Pommes Golden calibre 70/75 — 20 tonnes"></label>
+    <label>Titre *<input name="title" maxlength="120" required value="<%= values.title || '' %>" placeholder="Ex : Dattes Deglet Nour branchées — 20 tonnes"></label>
     <div class="row">
       <label>Catégorie *<select name="category" required>
         <option value="">Choisir…</option>
         <% CATEGORIES.forEach(c => { %><option <%= values.category === c ? 'selected' : '' %>><%= c %></option><% }) %>
       </select></label>
-      <label>Région<select name="region">
+      <label>Pays d'origine<select name="country">
         <option value="">—</option>
-        <% REGIONS.forEach(r => { %><option <%= values.region === r ? 'selected' : '' %>><%= r %></option><% }) %>
+        <% COUNTRIES.forEach(c => { %><option <%= values.country === c ? 'selected' : '' %>><%= c %></option><% }) %>
       </select></label>
     </div>
     <div class="row">
-      <label>Quantité / volume<input name="quantity" maxlength="100" value="<%= values.quantity || '' %>" placeholder="Ex : 5 palettes / mois"></label>
-      <label>Prix indicatif<input name="price" maxlength="100" value="<%= values.price || '' %>" placeholder="Ex : 1,20 €/kg HT, à négocier"></label>
+      <label>Quantité / volume<input name="quantity" maxlength="100" value="<%= values.quantity || '' %>" placeholder="Ex : 1 conteneur 20' / mois"></label>
+      <label>Prix indicatif<input name="price" maxlength="100" value="<%= values.price || '' %>" placeholder="Ex : 3,20 €/kg"></label>
     </div>
-    <label>Description *<textarea name="description" rows="7" maxlength="3000" required placeholder="Origine, conditionnement, labels, délais, conditions de livraison…"><%= values.description || '' %></textarea></label>
-    <button class="btn">Publier</button>
+    <div class="row">
+      <label>Incoterm<select name="incoterm">
+        <option value="">—</option>
+        <% INCOTERMS.forEach(i => { %><option <%= values.incoterm === i ? 'selected' : '' %>><%= i %></option><% }) %>
+      </select></label>
+      <label>Conditionnement<input name="packaging" maxlength="150" value="<%= values.packaging || '' %>" placeholder="Ex : cartons 5 kg, ravier 500 g, vrac…"></label>
+    </div>
+    <fieldset class="checks">
+      <legend>Documents disponibles</legend>
+      <% Object.entries(DOCUMENTS).forEach(([key, label]) => { %>
+        <label class="check"><input type="checkbox" name="documents" value="<%= key %>" <%= values.documents.includes(key) ? 'checked' : '' %>> <%= label %></label>
+      <% }) %>
+    </fieldset>
+    <label>Description *<textarea name="description" rows="7" maxlength="3000" required placeholder="Variété, calibre, récolte, origine, délais, capacité mensuelle…"><%= values.description || '' %></textarea></label>
+    <div class="photo-picker" data-photo-picker data-max="6">
+      <div class="label">Photos <small class="muted">(jusqu'à 6 — JPG, PNG ou WEBP, 5 Mo max chacune)</small></div>
+      <div class="photo-previews" data-previews></div>
+      <label class="photo-add"><%- icon('upload') %><span>Ajouter des photos</span><input type="file" name="photos" accept="image/jpeg,image/png,image/webp" multiple data-photo-input></label>
+      <div class="small error-text" data-photo-error hidden></div>
+    </div>
+    <button class="btn">Envoyer pour publication</button>
   </form>
 </div>
 <%- include('partials/footer') %>

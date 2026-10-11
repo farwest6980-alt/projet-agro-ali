@@ -1,38 +1,65 @@
 <%- include('partials/header', { title: listing.title }) %>
-<p><a href="/annonces">← Toutes les annonces</a></p>
-<div class="profile-layout">
-  <section class="card">
-    <div class="card-top">
-      <span class="tag tag-<%= listing.type %>"><%= listing.type === 'offre' ? 'Offre — vente' : 'Demande — achat' %></span>
-      <span class="muted small">Publiée le <%= formatDate(listing.created_at) %></span>
+<p><a href="/annonces" class="with-icon"><%- icon('back') %>Toutes les annonces</a></p>
+<% if (listing.status !== 'publiee') { %>
+  <div class="flash flash-info">Statut : <strong><%= LISTING_STATUS[listing.status] %></strong><%= listing.status === 'en_moderation' ? ' — cette annonce sera visible publiquement après validation par notre équipe.' : '' %></div>
+<% } %>
+<div class="profile-layout listing-layout">
+  <section>
+    <div class="gallery card" data-gallery>
+      <% if (photos.length) { %>
+        <div class="gallery-main">
+          <% photos.forEach((p, i) => { %><img src="/media/listings/<%= p.filename %>.webp" alt="Photo <%= i + 1 %> — <%= listing.title %>" <%= i ? 'loading=lazy' : '' %>><% }) %>
+        </div>
+        <% if (photos.length > 1) { %>
+          <div class="gallery-thumbs">
+            <% photos.forEach((p, i) => { %><button type="button" class="<%= i === 0 ? 'active' : '' %>" data-index="<%= i %>" aria-label="Photo <%= i + 1 %>"><img src="/media/listings/<%= p.filename %>_thumb.webp" alt=""></button><% }) %>
+          </div>
+        <% } %>
+      <% } else { %>
+        <div class="photo-placeholder big"><%- icon('image') %><span>Pas de photo</span></div>
+      <% } %>
     </div>
-    <% if (!listing.active) { %><div class="flash flash-info">Cette annonce est clôturée.</div><% } %>
-    <h1><%= listing.title %></h1>
-    <div class="card-meta big">
-      <span>🏷️ <%= listing.category %></span>
-      <% if (listing.quantity) { %><span>📦 <%= listing.quantity %></span><% } %>
-      <% if (listing.price) { %><span>💶 <%= listing.price %></span><% } %>
-      <% if (listing.region) { %><span>📍 <%= listing.region %></span><% } %>
+    <div class="card">
+      <div class="card-top">
+        <span class="tag tag-<%= listing.type %>"><%= listing.type === 'offre' ? 'Offre — vente' : 'Demande — achat' %></span>
+        <span class="muted small">Publiée le <%= formatDate(listing.created_at) %></span>
+      </div>
+      <h1><%= listing.title %></h1>
+      <dl class="specs">
+        <div><dt><%- icon('tag') %>Catégorie</dt><dd><%= listing.category %></dd></div>
+        <% if (listing.quantity) { %><div><dt><%- icon('box') %>Quantité</dt><dd><%= listing.quantity %></dd></div><% } %>
+        <% if (listing.price) { %><div><dt><%- icon('euro') %>Prix indicatif</dt><dd><%= listing.price %></dd></div><% } %>
+        <% if (listing.incoterm) { %><div><dt><%- icon('truck') %>Incoterm</dt><dd><%= listing.incoterm %></dd></div><% } %>
+        <% if (listing.packaging) { %><div><dt><%- icon('box') %>Conditionnement</dt><dd><%= listing.packaging %></dd></div><% } %>
+        <% if (listing.country) { %><div><dt><%- icon('pin') %>Pays</dt><dd><%= listing.country %></dd></div><% } %>
+      </dl>
+      <% if (listing.documents.length) { %>
+        <h3>Documents disponibles</h3>
+        <ul class="doc-list"><% listing.documents.forEach(d => { %><li><%- icon('check') %><%= DOCUMENTS[d] %></li><% }) %></ul>
+      <% } %>
+      <h3>Description</h3>
+      <p class="prewrap"><%= listing.description %></p>
     </div>
-    <p class="prewrap"><%= listing.description %></p>
   </section>
-  <aside class="card profile-card">
-    <div class="avatar avatar-lg"><%= listing.company.slice(0, 1).toUpperCase() %></div>
+  <aside class="card profile-card sticky">
+    <%- avatar({ company: listing.company, logo: listing.logo }, 'lg') %>
     <h3><a href="/fournisseurs/<%= listing.owner_id %>"><%= listing.company %></a></h3>
-    <div class="muted small"><%= listing.role === 'fournisseur' ? 'Fournisseur' : 'Acheteur' %> · <%= [listing.city, listing.user_region].filter(Boolean).join(', ') %></div>
+    <div class="badges"><%- verifiedBadge(listing) %></div>
+    <div class="muted small"><%= listing.owner_role === 'fournisseur' ? 'Fournisseur' : 'Acheteur' %> · <%= [listing.city, listing.owner_country].filter(Boolean).join(', ') %></div>
     <% if (!user) { %>
       <a class="btn btn-block" href="/connexion?next=/annonces/<%= listing.id %>">Se connecter pour répondre</a>
     <% } else if (user.id !== listing.owner_id) { %>
       <form method="post" action="/messages/nouveau">
         <input type="hidden" name="to" value="<%= listing.owner_id %>">
         <input type="hidden" name="listing_id" value="<%= listing.id %>">
-        <button class="btn btn-block">💬 Contacter à propos de l'annonce</button>
+        <button class="btn btn-block"><%- icon('chat') %><%= listing.type === 'offre' ? 'Demander un devis' : 'Proposer mon offre' %></button>
       </form>
-    <% } else if (listing.active) { %>
+    <% } else if (listing.status !== 'cloturee') { %>
       <form method="post" action="/annonces/<%= listing.id %>/cloturer" onsubmit="return confirm('Clôturer cette annonce ?')">
         <button class="btn btn-outline btn-block">Clôturer l'annonce</button>
       </form>
     <% } %>
+    <p class="small muted secure-note"><%- icon('lock') %>Ne payez jamais en dehors de la plateforme.</p>
   </aside>
 </div>
 <%- include('partials/footer') %>

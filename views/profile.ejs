@@ -6,45 +6,70 @@
     <form method="post" action="/deconnexion"><button class="btn btn-outline">Déconnexion</button></form>
   </div>
 </div>
+<% if (user.role === 'fournisseur' && !user.is_admin) { %>
+  <div class="card verif-box verif-<%= user.verification_status %>">
+    <%- user.verification_status === 'verifie' ? icon('verified') : icon('shield') %>
+    <div>
+      <strong>Vérification : <%= VERIF_STATUS[user.verification_status] %></strong>
+      <div class="small muted">
+        <% if (user.verification_status === 'verifie') { %>Votre badge « Vérifié » est affiché sur vos annonces, votre fiche et dans la messagerie.
+        <% } else if (user.verification_status === 'en_attente') { %>Vos documents sont en cours d'examen par notre équipe.
+        <% } else if (user.verification_status === 'refuse') { %>Votre demande a été refusée. Vous pouvez envoyer de nouveaux documents.
+        <% } else { %>Faites vérifier votre entreprise pour inspirer confiance aux acheteurs européens.<% } %>
+      </div>
+    </div>
+    <a class="btn btn-small" href="/profil/verification"><%= ['verifie', 'en_attente'].includes(user.verification_status) ? 'Voir' : 'Faire vérifier mon entreprise' %></a>
+  </div>
+<% } %>
 <div class="profile-layout reverse">
   <section class="card">
     <h2>Informations <span class="tag tag-<%= user.role === 'fournisseur' ? 'offre' : 'demande' %>"><%= user.role === 'fournisseur' ? 'Fournisseur' : 'Acheteur' %></span></h2>
-    <form method="post" action="/profil" class="form">
+    <form method="post" action="/profil" class="form" enctype="multipart/form-data">
+      <div class="logo-field">
+        <%- avatar(user, 'xl') %>
+        <div>
+          <label>Logo de l'entreprise <small class="muted">(JPG, PNG ou WEBP, 5 Mo max)</small><input type="file" name="logo" accept="image/jpeg,image/png,image/webp"></label>
+          <% if (user.logo) { %><label class="check"><input type="checkbox" name="remove_logo" value="1"> Supprimer le logo</label><% } %>
+        </div>
+      </div>
       <div class="row">
         <label>Nom et prénom<input name="name" maxlength="100" value="<%= user.name %>"></label>
         <label>Entreprise<input name="company" maxlength="120" value="<%= user.company %>"></label>
       </div>
-      <label>Présentation de l'entreprise<textarea name="description" rows="6" maxlength="3000" placeholder="Votre activité, vos produits, vos capacités de production, vos zones de livraison…"><%= user.description %></textarea></label>
+      <label>Présentation de l'entreprise<textarea name="description" rows="6" maxlength="3000" placeholder="Votre activité, vos produits, vos capacités, vos marchés export…"><%= user.description %></textarea></label>
       <div class="row">
         <label>Activité principale<select name="category">
           <option value="">—</option>
           <% CATEGORIES.forEach(c => { %><option <%= user.category === c ? 'selected' : '' %>><%= c %></option><% }) %>
         </select></label>
-        <label>Région<select name="region">
+        <label>Pays<select name="country">
           <option value="">—</option>
-          <% REGIONS.forEach(r => { %><option <%= user.region === r ? 'selected' : '' %>><%= r %></option><% }) %>
+          <% COUNTRIES.forEach(c => { %><option <%= user.country === c ? 'selected' : '' %>><%= c %></option><% }) %>
         </select></label>
       </div>
       <div class="row">
         <label>Ville<input name="city" maxlength="100" value="<%= user.city %>"></label>
-        <label>Labels / certifications<input name="certifications" maxlength="300" value="<%= user.certifications %>" placeholder="Bio, IFS, BRC, AOP, Label Rouge…"></label>
+        <label>Labels / certifications<input name="certifications" maxlength="300" value="<%= user.certifications %>" placeholder="Bio UE, IFS, BRC, ISO 22000, Ecocert…"></label>
       </div>
-      <div class="row">
-        <label>Téléphone <small class="muted">(visible des membres connectés)</small><input name="phone" maxlength="40" value="<%= user.phone %>"></label>
-        <label>Site web<input name="website" maxlength="200" value="<%= user.website %>" placeholder="https://…"></label>
+      <div class="private-box">
+        <div class="small with-icon"><%- icon('lock') %>Informations privées : jamais affichées publiquement, visibles uniquement par l'équipe AgroLink.</div>
+        <div class="row">
+          <label>Téléphone<input name="phone" maxlength="40" value="<%= user.phone %>"></label>
+          <label>Site web<input name="website" maxlength="200" value="<%= user.website %>" placeholder="https://…"></label>
+        </div>
       </div>
       <button class="btn">Enregistrer</button>
     </form>
   </section>
   <section>
-    <div class="section-head"><h2 class="section-title">Mes annonces</h2><a class="btn btn-small" href="/annonces/nouvelle">+ Nouvelle</a></div>
+    <div class="section-head"><h2 class="section-title">Mes annonces</h2><a class="btn btn-small" href="/annonces/nouvelle"><%- icon('plus') %>Nouvelle</a></div>
     <% listings.forEach(l => { %>
-      <div class="card mini-listing<%= l.active ? '' : ' inactive' %>">
-        <span class="tag tag-<%= l.type %>"><%= l.type === 'offre' ? 'Offre' : 'Demande' %></span>
+      <div class="card mini-listing status-<%= l.status %>">
         <a href="/annonces/<%= l.id %>"><strong><%= l.title %></strong></a>
-        <% if (l.active) { %>
+        <span class="pill pill-<%= l.status %>"><%= LISTING_STATUS[l.status] %></span>
+        <% if (['publiee', 'en_moderation'].includes(l.status)) { %>
           <form method="post" action="/annonces/<%= l.id %>/cloturer" onsubmit="return confirm('Clôturer cette annonce ?')"><button class="link-btn">Clôturer</button></form>
-        <% } else { %><span class="muted small">Clôturée</span><% } %>
+        <% } %>
       </div>
     <% }) %>
     <% if (!listings.length) { %><div class="empty">Vous n'avez pas encore publié d'annonce.</div><% } %>

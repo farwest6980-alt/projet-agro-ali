@@ -1,7 +1,7 @@
 <%- include('partials/header', { title: 'Annonces' }) %>
 <div class="section-head">
   <h1>Annonces</h1>
-  <a class="btn" href="/annonces/nouvelle">+ Publier une annonce</a>
+  <a class="btn" href="/annonces/nouvelle"><%- icon('plus') %>Publier une annonce</a>
 </div>
 <%- include('partials/filters', { placeholder: 'Produit, entreprise…', showType: true }) %>
 <p class="muted"><%= listings.length %> annonce<%= listings.length > 1 ? 's' : '' %></p>

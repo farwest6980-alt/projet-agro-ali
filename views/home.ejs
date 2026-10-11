@@ -1,43 +1,51 @@
 <%- include('partials/header') %>
 <section class="hero">
-  <h1>Trouvez vos fournisseurs agroalimentaires,<br>échangez en direct.</h1>
-  <p>Annuaire de producteurs, transformateurs et grossistes. Publiez vos offres ou vos besoins, et discutez directement avec vos partenaires.</p>
-  <form class="hero-search" action="/fournisseurs">
-    <input type="search" name="q" placeholder="Ex : huile d'olive, fromage AOP, emballage carton…">
-    <button class="btn">Rechercher</button>
+  <div class="hero-kicker">Tunisie · Maroc · Algérie → France · Belgique</div>
+  <h1>Le sourcing agroalimentaire<br>du Maghreb vers l'Europe.</h1>
+  <p>Dattes, huile d'olive, épices, argan, couscous… Trouvez des producteurs et conditionneurs vérifiés, recevez des devis et négociez en direct, en toute sécurité.</p>
+  <form class="hero-search" action="/annonces">
+    <input type="search" name="q" placeholder="Ex : Deglet Nour, huile d'olive extra vierge, ras el hanout…">
+    <button class="btn"><%- icon('search') %>Rechercher</button>
   </form>
   <div class="hero-cta">
     <% if (!user) { %>
-      <a class="btn btn-outline" href="/inscription?role=fournisseur">Je suis fournisseur</a>
-      <a class="btn btn-outline" href="/inscription?role=acheteur">Je suis acheteur</a>
+      <a class="btn btn-outline" href="/inscription?role=fournisseur">Je suis fournisseur / exportateur</a>
+      <a class="btn btn-outline" href="/inscription?role=acheteur">Je suis acheteur / importateur</a>
     <% } else { %>
       <a class="btn btn-outline" href="/annonces/nouvelle">Publier une annonce</a>
     <% } %>
   </div>
   <div class="stats">
     <div><strong><%= stats.suppliers %></strong><span>fournisseurs</span></div>
+    <div><strong><%= stats.verified %></strong><span>vérifiés</span></div>
     <div><strong><%= stats.buyers %></strong><span>acheteurs</span></div>
-    <div><strong><%= stats.listings %></strong><span>annonces actives</span></div>
+    <div><strong><%= stats.listings %></strong><span>annonces</span></div>
   </div>
+</section>
+
+<section class="trust">
+  <div><%- icon('shield') %><div><strong>Fournisseurs vérifiés</strong><span>Registre de commerce, code en douane et agrément export contrôlés.</span></div></div>
+  <div><%- icon('file') %><div><strong>Devis dans le chat</strong><span>Produit, prix, incoterm, validité : tout est tracé.</span></div></div>
+  <div><%- icon('lock') %><div><strong>Anti-arnaque</strong><span>Coordonnées bancaires bloquées tant qu'aucun devis n'est accepté.</span></div></div>
 </section>
 
 <section>
   <h2 class="section-title">Catégories</h2>
   <div class="chips">
-    <% CATEGORIES.forEach(c => { %><a class="chip" href="/fournisseurs?categorie=<%= encodeURIComponent(c) %>"><%= c %></a><% }) %>
+    <% CATEGORIES.forEach(c => { %><a class="chip" href="/annonces?categorie=<%= encodeURIComponent(c) %>"><%= c %></a><% }) %>
   </div>
 </section>
 
 <section>
-  <div class="section-head"><h2 class="section-title">Dernières annonces</h2><a href="/annonces">Tout voir →</a></div>
+  <div class="section-head"><h2 class="section-title">Dernières annonces</h2><a href="/annonces">Tout voir</a></div>
   <div class="grid">
     <% listings.forEach(l => { %><%- include('partials/listing-card', { l }) %><% }) %>
-    <% if (!listings.length) { %><p class="muted">Aucune annonce pour l'instant.</p><% } %>
   </div>
+  <% if (!listings.length) { %><div class="empty">Aucune annonce pour l'instant.</div><% } %>
 </section>
 
 <section>
-  <div class="section-head"><h2 class="section-title">Nouveaux fournisseurs</h2><a href="/fournisseurs">Voir l'annuaire →</a></div>
+  <div class="section-head"><h2 class="section-title">Fournisseurs</h2><a href="/fournisseurs">Voir l'annuaire</a></div>
   <div class="grid">
     <% suppliers.forEach(s => { %><%- include('partials/supplier-card', { s }) %><% }) %>
   </div>

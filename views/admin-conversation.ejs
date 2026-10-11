@@ -1,0 +1,17 @@
+<%- include('partials/header', { title: 'Conversation signalée' }) %>
+<p><a href="/admin#signalements" class="with-icon"><%- icon('back') %>Administration</a></p>
+<div class="card form-page">
+  <h1>Conversation : <%= conv.a_company %> ↔ <%= conv.b_company %></h1>
+  <div class="admin-log">
+    <% messages.forEach(m => { %>
+      <div class="log-line">
+        <div class="small muted"><strong><%= m.company %></strong> · <%= formatDate(m.created_at) %></div>
+        <% if (m.type === 'devis') { %>
+          <div class="with-icon"><%- icon('file') %>Devis : <%= m.product %> · <%= m.quantity %> · <%= m.price %> · <%= m.incoterm %> · jusqu'au <%= formatDay(m.valid_until) %> — <em><%= QUOTE_STATUS[m.q_status] %></em></div>
+        <% } else { %><div class="prewrap"><%= m.body %></div><% } %>
+      </div>
+    <% }) %>
+    <% if (!messages.length) { %><p class="muted">Aucun message.</p><% } %>
+  </div>
+</div>
+<%- include('partials/footer') %>

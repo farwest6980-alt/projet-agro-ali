@@ -11,9 +11,10 @@
     <option value="">Toutes catégories</option>
     <% CATEGORIES.forEach(c => { %><option <%= filters.categorie === c ? 'selected' : '' %>><%= c %></option><% }) %>
   </select>
-  <select name="region">
-    <option value="">Toutes régions</option>
-    <% REGIONS.forEach(r => { %><option <%= filters.region === r ? 'selected' : '' %>><%= r %></option><% }) %>
+  <select name="pays">
+    <option value="">Tous pays</option>
+    <% COUNTRIES.forEach(c => { %><option <%= filters.pays === c ? 'selected' : '' %>><%= c %></option><% }) %>
   </select>
-  <button class="btn">Filtrer</button>
+  <label class="check"><input type="checkbox" name="verifie" value="1" <%= filters.verifie ? 'checked' : '' %>> Vérifiés uniquement</label>
+  <button class="btn"><%- icon('search') %>Filtrer</button>
 </form>
