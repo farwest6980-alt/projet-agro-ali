@@ -3,24 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><%= typeof title !== 'undefined' ? title + ' · ' : '' %>AgroLink — Agroalimentaire Maghreb · Europe</title>
+  <title><%= typeof title !== 'undefined' ? title + ' · ' : '' %>Tijara — Agroalimentaire Maghreb · Europe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body<% if (user) { %> data-user-id="<%= user.id %>"<% } %>>
 <header class="topbar">
   <div class="container nav">
-    <a href="/" class="brand"><span class="brand-mark"><%- icon('leaf') %></span>AgroLink</a>
+    <a href="/" class="brand" aria-label="Tijara, accueil">tijara<span class="brand-dot">.</span></a>
     <nav class="links">
       <a href="/fournisseurs">Fournisseurs</a>
       <a href="/annonces">Annonces</a>
       <% if (user) { %>
         <% if (user.is_admin) { %><a href="/admin">Admin<span class="badge"<% if (!adminQueue) { %> hidden<% } %>><%= adminQueue %></span></a><% } %>
         <a href="/messages">Messages<span class="badge" id="unread-badge"<% if (!unread) { %> hidden<% } %>><%= unread %></span></a>
-        <a href="/annonces/nouvelle" class="btn btn-small hide-mobile"><%- icon('plus') %>Annonce</a>
+        <a href="/annonces/nouvelle" class="btn btn-small btn-accent hide-mobile"><%- icon('plus') %>Publier</a>
         <a href="/profil" class="nav-avatar" title="Mon profil"><%- avatar(user) %></a>
       <% } else { %>
         <a href="/connexion">Connexion</a>
-        <a href="/inscription" class="btn btn-small">Inscription</a>
+        <a href="/inscription" class="btn btn-small btn-light">Inscription</a>
       <% } %>
     </nav>
   </div>

@@ -9,7 +9,7 @@
     <dl class="quote-grid">
       <dt>Produit</dt><dd><%= m.q_product %></dd>
       <dt>Quantité</dt><dd><%= m.q_quantity %></dd>
-      <dt>Prix</dt><dd><%= m.q_price %></dd>
+      <dt>Prix</dt><dd class="price"><%= m.q_price %></dd>
       <dt>Incoterm</dt><dd><%= m.q_incoterm %></dd>
       <dt>Valable jusqu'au</dt><dd><%= formatDay(m.q_valid_until) %></dd>
     </dl>

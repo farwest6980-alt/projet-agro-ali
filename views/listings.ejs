@@ -3,6 +3,19 @@
   <h1>Annonces</h1>
   <a class="btn" href="/annonces/nouvelle"><%- icon('plus') %>Publier une annonce</a>
 </div>
+<% const chipUrl = (c) => {
+  const p = new URLSearchParams();
+  if (filters.q) p.set('q', filters.q);
+  if (filters.type) p.set('type', filters.type);
+  if (c) p.set('categorie', c);
+  if (filters.pays) p.set('pays', filters.pays);
+  if (filters.verifie) p.set('verifie', '1');
+  return `/annonces${p.size ? '?' + p : ''}`;
+}; %>
+<nav class="chips chips-scroll" aria-label="Catégories">
+  <a class="chip<%= !filters.categorie ? ' active' : '' %>" href="<%= chipUrl('') %>"<%- !filters.categorie ? ' aria-current="true"' : '' %>>Toutes</a>
+  <% CATEGORIES.forEach(c => { %><a class="chip<%= filters.categorie === c ? ' active' : '' %>" href="<%= chipUrl(c) %>"<%- filters.categorie === c ? ' aria-current="true"' : '' %>><%= c %></a><% }) %>
+</nav>
 <%- include('partials/filters', { placeholder: 'Produit, entreprise…', showType: true }) %>
 <p class="muted"><%= listings.length %> annonce<%= listings.length > 1 ? 's' : '' %></p>
 <div class="grid">

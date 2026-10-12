@@ -1,4 +1,4 @@
-# AgroLink
+# Tijara
 
 Place de marché B2B de l'agroalimentaire **Maghreb → Europe** : des fournisseurs vérifiés (Tunisie, Maroc, Algérie) et des acheteurs (France, Belgique) publient des annonces, échangent des devis et négocient dans une messagerie sécurisée.
 
@@ -29,13 +29,22 @@ Comptes de démo (mot de passe `demo1234`) :
 
 | Rôle | E-mail |
 |---|---|
-| Admin | `admin@agrolink.test` |
+| Admin | `admin@tijara.test` |
 | Fournisseur vérifié (dattes, Douz) | `export@palmeraie-douz.tn` |
 | Fournisseur vérifié (huile, Sfax) | `export@zitouna-sfax.tn` |
 | Acheteur (Paris), avec un devis en attente | `sourcing@biome-bio.fr` |
 | Acheteur (Marseille) | `achats@med-import.fr` |
 
 Variables d'environnement : `PORT`, `SESSION_SECRET` (obligatoire en production), `DB_PATH`, `UPLOADS_DIR`, `TRUST_PROXY` (derrière un reverse proxy, pour que la limite de connexion voie la vraie IP).
+
+## Identité visuelle
+
+Palette « Médina », définie en variables CSS dans `:root` de `public/style.css`. Aucune couleur n'est écrite en dur ailleurs : les teintes claires (fonds de statuts, bandeau de sécurité) sont dérivées des variables avec `color-mix()`.
+
+- Indigo `--primary` : header, boutons principaux, liens, chips actives, mes bulles de chat
+- Safran `--accent` : bouton « Publier », badges de notification, point du logo. Le texte posé dessus est toujours sombre (`--accent-ink`).
+- Typographie : Bricolage Grotesque pour les titres et le logo, IBM Plex Sans pour le texte (Google Fonts, avec polices de secours)
+- Tous les couples texte/fond respectent le contraste WCAG AA (4,5:1 minimum pour le texte)
 
 ## Structure
 

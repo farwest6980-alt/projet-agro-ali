@@ -98,7 +98,7 @@ router.post('/connexion', (req, res) => {
   }
   db.prepare('DELETE FROM login_attempts WHERE key IN (?, ?)').run(keys[0][0], keys[1][0]);
   if (user.verification_status === 'suspendu' && !user.is_admin) {
-    return res.status(403).render('login', { error: "Ce compte est suspendu. Contactez l'équipe AgroLink.", email, next });
+    return res.status(403).render('login', { error: "Ce compte est suspendu. Contactez l'équipe Tijara.", email, next });
   }
   req.session.regenerate(() => {
     req.session.userId = user.id;

@@ -9,7 +9,7 @@
     <h3><%= l.title %></h3>
     <div class="card-meta">
       <% if (l.quantity) { %><span><%- icon('box') %><%= l.quantity %></span><% } %>
-      <% if (l.price) { %><span><%- icon('euro') %><%= l.price %></span><% } %>
+      <% if (l.price) { %><span class="price"><%- icon('euro') %><%= l.price %></span><% } %>
       <% if (l.incoterm) { %><span><%- icon('truck') %><%= l.incoterm %></span><% } %>
       <% if (l.country) { %><span><%- icon('pin') %><%= l.country %></span><% } %>
     </div>

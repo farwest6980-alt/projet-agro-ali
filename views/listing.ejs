@@ -28,7 +28,7 @@
       <dl class="specs">
         <div><dt><%- icon('tag') %>Catégorie</dt><dd><%= listing.category %></dd></div>
         <% if (listing.quantity) { %><div><dt><%- icon('box') %>Quantité</dt><dd><%= listing.quantity %></dd></div><% } %>
-        <% if (listing.price) { %><div><dt><%- icon('euro') %>Prix indicatif</dt><dd><%= listing.price %></dd></div><% } %>
+        <% if (listing.price) { %><div><dt><%- icon('euro') %>Prix indicatif</dt><dd class="price"><%= listing.price %></dd></div><% } %>
         <% if (listing.incoterm) { %><div><dt><%- icon('truck') %>Incoterm</dt><dd><%= listing.incoterm %></dd></div><% } %>
         <% if (listing.packaging) { %><div><dt><%- icon('box') %>Conditionnement</dt><dd><%= listing.packaging %></dd></div><% } %>
         <% if (listing.country) { %><div><dt><%- icon('pin') %>Pays</dt><dd><%= listing.country %></dd></div><% } %>

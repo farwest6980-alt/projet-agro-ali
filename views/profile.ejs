@@ -8,7 +8,7 @@
 </div>
 <% if (user.role === 'fournisseur' && !user.is_admin) { %>
   <div class="card verif-box verif-<%= user.verification_status %>">
-    <%- user.verification_status === 'verifie' ? icon('verified') : icon('shield') %>
+    <%- user.verification_status === 'verifie' ? icon('check') : icon('shield') %>
     <div>
       <strong>Vérification : <%= VERIF_STATUS[user.verification_status] %></strong>
       <div class="small muted">
@@ -52,7 +52,7 @@
         <label>Labels / certifications<input name="certifications" maxlength="300" value="<%= user.certifications %>" placeholder="Bio UE, IFS, BRC, ISO 22000, Ecocert…"></label>
       </div>
       <div class="private-box">
-        <div class="small with-icon"><%- icon('lock') %>Informations privées : jamais affichées publiquement, visibles uniquement par l'équipe AgroLink.</div>
+        <div class="small with-icon"><%- icon('lock') %>Informations privées : jamais affichées publiquement, visibles uniquement par l'équipe Tijara.</div>
         <div class="row">
           <label>Téléphone<input name="phone" maxlength="40" value="<%= user.phone %>"></label>
           <label>Site web<input name="website" maxlength="200" value="<%= user.website %>" placeholder="https://…"></label>

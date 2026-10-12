@@ -41,7 +41,7 @@ const countAdminQueue = db.prepare(`
 app.use((req, res, next) => {
   let user = req.session.userId ? getUser.get(req.session.userId) : null;
   if (user && user.verification_status === 'suspendu' && !user.is_admin) {
-    req.session.flash = { type: 'error', text: "Votre compte est suspendu. Contactez l'équipe AgroLink." };
+    req.session.flash = { type: 'error', text: "Votre compte est suspendu. Contactez l'équipe Tijara." };
     user = null;
   }
   if (!user) delete req.session.userId;
@@ -76,7 +76,7 @@ app.use(require('./routes/admin'));
 app.use((req, res) => res.status(404).render('error', { message: 'Page introuvable.' }));
 
 if (require.main === module) {
-  app.listen(PORT, () => console.log(`AgroLink en ligne sur http://localhost:${PORT}`));
+  app.listen(PORT, () => console.log(`Tijara en ligne sur http://localhost:${PORT}`));
 }
 
 module.exports = app;

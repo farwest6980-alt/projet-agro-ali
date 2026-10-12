@@ -137,7 +137,7 @@ const insertUser = db.prepare(`INSERT INTO users
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now', ?))`);
 
 const users = {
-  admin: ['acheteur', 1, 'verifie', 'Équipe AgroLink', 'AgroLink', 'admin@agrolink.test', '', 'France', 'Paris', '', '', '', "Équipe de modération d'AgroLink.", null],
+  admin: ['acheteur', 1, 'verifie', 'Équipe Tijara', 'Tijara', 'admin@tijara.test', '', 'France', 'Paris', '', '', '', "Équipe de modération de Tijara.", null],
   douz: ['fournisseur', 0, 'verifie', 'Mohamed Ben Salem', 'Palmeraie de Douz', 'export@palmeraie-douz.tn', 'Dattes', 'Tunisie', 'Douz', 'Bio UE (Ecocert), GlobalG.A.P., IFS Food', '+216 75 470 000', 'https://palmeraie-douz.example', "Conditionneur de dattes Deglet Nour dans le Nefzaoua depuis 1998. Station de tri, fumigation et chambres froides sur site. Capacité : 2 500 t/saison. Export vers la France, l'Allemagne et l'Italie.", '#7a4418'],
   kebili: ['fournisseur', 0, 'verifie', 'Sana Gharbi', 'Kébili Dattes Export', 'contact@kebili-dattes.tn', 'Dattes', 'Tunisie', 'Kébili', 'ISO 22000, HACCP', '+216 75 490 000', '', 'Dattes Deglet Nour branchées, en vrac et en raviers. Spécialiste des marques distributeurs (MDD) pour la GMS européenne. Pâte de dattes pour l\'industrie.', '#9c5a26'],
   tozeur: ['fournisseur', 0, 'en_attente', 'Hichem Jebali', 'Oasis Tozeur Conditionnement', 'hichem@oasis-tozeur.tn', 'Dattes', 'Tunisie', 'Tozeur', 'HACCP', '+216 76 450 000', '', "Jeune unité de conditionnement au cœur de l'oasis de Tozeur. Dattes Deglet Nour, Alig et Kentichi.", null],
@@ -244,7 +244,7 @@ db.prepare(`INSERT INTO reports (reporter_id, reported_user_id, conversation_id,
 db.prepare("UPDATE conversations SET updated_at = datetime('now', '-' || (id * 2) || ' hours')").run();
 
 console.log(`Seed OK : ${keys.length} comptes (mot de passe : demo1234), ${listings.length} annonces avec photos.`);
-console.log('Admin : admin@agrolink.test — Fournisseur : export@palmeraie-douz.tn — Acheteur : achats@med-import.fr');
+console.log('Admin : admin@tijara.test — Fournisseur : export@palmeraie-douz.tn — Acheteur : achats@med-import.fr');
 }
 
 main().catch((err) => {

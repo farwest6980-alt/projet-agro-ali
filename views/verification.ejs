@@ -3,7 +3,7 @@
   <p><a href="/profil" class="with-icon"><%- icon('back') %>Mon profil</a></p>
   <h1>Vérification de l'entreprise</h1>
   <div class="verif-box verif-<%= user.verification_status %>">
-    <%- user.verification_status === 'verifie' ? icon('verified') : icon('shield') %>
+    <%- user.verification_status === 'verifie' ? icon('check') : icon('shield') %>
     <div><strong>Statut : <%= VERIF_STATUS[user.verification_status] %></strong></div>
   </div>
   <% if (error) { %><div class="flash flash-error"><%= error %></div><% } %>
@@ -13,7 +13,7 @@
   <% } else if (['en_attente', 'verifie'].includes(user.verification_status)) { %>
     <p class="muted"><%= user.verification_status === 'verifie' ? 'Votre entreprise est vérifiée. Le badge est affiché sur votre fiche, vos annonces et dans la messagerie.' : 'Merci ! Notre équipe examine vos documents, généralement sous 48 h ouvrées.' %></p>
   <% } else { %>
-    <p class="muted">Envoyez les documents officiels de votre entreprise. Ils restent confidentiels : seule l'équipe AgroLink peut les consulter.</p>
+    <p class="muted">Envoyez les documents officiels de votre entreprise. Ils restent confidentiels : seule l'équipe Tijara peut les consulter.</p>
     <form method="post" action="/profil/verification" class="form" enctype="multipart/form-data">
       <% Object.entries(VERIFICATION_DOCS).forEach(([key, label]) => { %>
         <label><%= label %><%= key === 'registre_commerce' ? ' *' : '' %> <small class="muted">(PDF ou JPG, 10 Mo max)</small>
